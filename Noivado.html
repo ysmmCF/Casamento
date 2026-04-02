@@ -14,6 +14,7 @@
   <style>
     :root{
       --azul:#004AAD;
+      --vh:1vh; /* fallback, será atualizado pelo JS */
     }
 
     body{
@@ -22,9 +23,7 @@
       height:100dvh;
       overflow:hidden;
       touch-action:none;
-
       font-family:"Cormorant Garamond",serif;
-
       background-color:#ffffff;
       background-image:url("https://raw.githubusercontent.com/ysmmCF/Casamento/main/Dayvid_20260402_193220_0000.png");
       background-repeat:no-repeat;
@@ -39,10 +38,8 @@
       height:100dvh;
       object-fit:contain;
       display:block;
-
       opacity:0;
       pointer-events:none;
-
       position:absolute;
       top:0;
       left:0;
@@ -52,7 +49,7 @@
     /* ELEMENTOS POR CIMA */
     .countdown-area,
     .menu-botoes{
-      position:absolute;
+      position:fixed; /* FIXED PARA iOS */
       left:50%;
       transform:translateX(-50%);
       width:100%;
@@ -64,7 +61,6 @@
     /* ===================== */
     /* POPUP PREMIUM */
     /* ===================== */
-
     .popup-overlay{
       position:fixed;
       top:0;
@@ -84,7 +80,7 @@
       border:1px solid rgba(0,74,173,0.85);
       border-radius:28px;
       padding:55px 38px;
-      width:60%; /* <<< MUDA A LARGURA DO POPUP AQUI */
+      width:60%;
       max-width:560px;
       text-align:center;
       color:var(--azul);
@@ -123,19 +119,9 @@
     /* ===================== */
     /* CONTAGEM */
     /* ===================== */
-
     .countdown-area{
-      /* ================================
-         MUDA A ALTURA DA CONTAGEM AQUI
-         ================================ */
-      top:60vh;
-
-      /* ================================
-         MUDA PRO LADO (ESQUERDA/DIREITA)
-         negativo = esquerda / positivo = direita
-         ================================ */
+      top:calc(var(--vh) * 66);
       margin-left:55px;
-
       color:var(--azul);
     }
 
@@ -147,7 +133,6 @@
       opacity:0.9;
     }
 
-    /* FORMATO: DIAS-HORAS / MIN-SEG */
     .countdown{
       display:flex;
       flex-direction:column;
@@ -185,19 +170,9 @@
     /* ===================== */
     /* BOTÕES */
     /* ===================== */
-
     .menu-botoes{
-      /* ================================
-         MUDA A ALTURA DOS BOTÕES AQUI
-         ================================ */
-      top:48.4vh;
-
-      /* ================================
-         MUDA PRO LADO (ESQUERDA/DIREITA)
-         negativo = esquerda / positivo = direita
-         ================================ */
+      top:calc(var(--vh) * 53);
       margin-left:5px;
-
       display:flex;
       justify-content:center;
       gap:28px;
@@ -244,32 +219,13 @@
     /* ===================== */
     /* CELULAR */
     /* ===================== */
-
     @media(max-width:420px){
-      .time-number{
-        font-size:32px;
-      }
-
-      .countdown-row{
-        gap:20px;
-      }
-
-      .time-box{
-        min-width:80px;
-      }
-
-      .menu-botoes{
-        gap:18px;
-      }
-
-      .botao-menu i{
-        font-size:20px;
-        padding:10px;
-      }
-
-      .popup-box p{
-        font-size:20px;
-      }
+      .time-number{ font-size:32px; }
+      .countdown-row{ gap:20px; }
+      .time-box{ min-width:80px; }
+      .menu-botoes{ gap:18px; }
+      .botao-menu i{ font-size:20px; padding:10px; }
+      .popup-box p{ font-size:20px; }
     }
   </style>
 </head>
@@ -283,7 +239,6 @@
   <div class="popup-overlay" id="popupOverlay">
     <div class="popup-box">
       <span class="popup-fechar" id="fecharPopup">✕</span>
-
       <p>
         <strong>Site interativo!</strong><br>
         Aperte nos botões para mais informações.
@@ -301,33 +256,27 @@
   <!-- CONTAGEM -->
   <div class="countdown-area">
     <p class="countdown-title">Contagem regressiva</p>
-
     <div class="countdown">
-
       <div class="countdown-row">
         <div class="time-box">
           <span id="dias" class="time-number">00</span>
           <span class="time-label">Dias</span>
         </div>
-
         <div class="time-box">
           <span id="horas" class="time-number">00</span>
           <span class="time-label">Horas</span>
         </div>
       </div>
-
       <div class="countdown-row">
         <div class="time-box">
           <span id="minutos" class="time-number">00</span>
           <span class="time-label">Min</span>
         </div>
-
         <div class="time-box">
           <span id="segundos" class="time-number">00</span>
           <span class="time-label">Seg</span>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -337,12 +286,10 @@
       <i class="fa-regular fa-circle-check"></i>
       <span>Confirmação<br>de Presença</span>
     </a>
-
     <a href="https://maps.app.goo.gl/RYXmwkLWAW8cs3Xc9?g_st=ac" class="botao-menu">
       <i class="fa-regular fa-map"></i>
       <span>Local</span>
     </a>
-
     <a href="https://alziraedayvid.listaideal.com.br/pt/" class="botao-menu">
       <i class="fa-solid fa-gift"></i>
       <span>Sugestões<br>de Presentes</span>
@@ -350,6 +297,38 @@
   </div>
 
   <script>
+    /* =======================
+       VARIÁVEL --VH PARA iOS
+    ======================= */
+    function atualizarAlturaVH(){
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('resize', atualizarAlturaVH);
+    window.addEventListener('load', atualizarAlturaVH);
+    atualizarAlturaVH();
+
+    /* =======================
+       AJUSTE ESPECÍFICO iOS
+    ======================= */
+    function ajustarIOS(){
+      const iOS = /iP(ad|hone|od)/.test(navigator.userAgent);
+      if(!iOS) return;
+
+      const vh = window.innerHeight * 0.01;
+      const menu = document.querySelector(".menu-botoes");
+      const countdown = document.querySelector(".countdown-area");
+
+      if(menu) menu.style.top = `calc(${vh * 48.4}px - env(safe-area-inset-bottom))`;
+      if(countdown) countdown.style.top = `calc(${vh * 60}px - env(safe-area-inset-bottom))`;
+    }
+    window.addEventListener("load", ajustarIOS);
+    window.addEventListener("resize", ajustarIOS);
+    ajustarIOS();
+
+    /* =======================
+       CONTAGEM REGRESSIVA
+    ======================= */
     const imgFundo = document.getElementById("fundoConvite");
 
     function atualizarCountdown(){
@@ -379,10 +358,9 @@
     setInterval(atualizarCountdown, 1000);
     atualizarCountdown();
 
-
-    /* ==========================================
+    /* ==========================
        BARREIRA: NADA PODE PASSAR DO FUNDO (IMG)
-       ========================================== */
+    ========================== */
     function travarDentroDaImagem(selector, margem = 10){
       const el = document.querySelector(selector);
       const img = document.getElementById("fundoConvite");
@@ -392,14 +370,12 @@
       const rectImg = img.getBoundingClientRect();
 
       let topAtual = parseFloat(getComputedStyle(el).top) || 0;
-
       const limiteTopo = rectImg.top + margem;
       const limiteBaixo = rectImg.bottom - margem;
 
       if(rectEl.top < limiteTopo){
         el.style.top = (topAtual + (limiteTopo - rectEl.top)) + "px";
       }
-
       if(rectEl.bottom > limiteBaixo){
         el.style.top = (topAtual - (rectEl.bottom - limiteBaixo)) + "px";
       }
@@ -419,13 +395,8 @@
     }
 
     imgFundo.addEventListener("load", ajustarTudoDireito);
-
-    if(imgFundo.complete){
-      ajustarTudoDireito();
-    }
-
+    if(imgFundo.complete){ ajustarTudoDireito(); }
     window.addEventListener("resize", ajustarTudoDireito);
-
 
     /* ==========================
        POPUP + MÚSICA
@@ -435,25 +406,20 @@
     const musica = document.getElementById("musicaNoivado");
 
     window.addEventListener("load", () => {
-      setTimeout(() => {
-        popupOverlay.style.display = "flex";
-      }, 1000);
+      setTimeout(() => { popupOverlay.style.display = "flex"; }, 1000);
     });
 
     function fadeInAudio(audio, duration = 3000){
       audio.volume = 0.03;
       audio.play();
-
       const stepTime = 60;
       const steps = duration / stepTime;
       const volumeStep = (1 - 0.03) / steps;
-
       let currentStep = 0;
 
       const fadeInterval = setInterval(() => {
         currentStep++;
         audio.volume = Math.min(1, audio.volume + volumeStep);
-
         if(currentStep >= steps){
           audio.volume = 1;
           clearInterval(fadeInterval);
@@ -466,6 +432,5 @@
       fadeInAudio(musica, 3000);
     });
   </script>
-
 </body>
-        </html>
+</html>
