@@ -309,18 +309,20 @@
     atualizarAlturaVH();
 
     /* =======================
-       AJUSTE ESPECÍFICO iOS
+       AJUSTE ESPECÍFICO iOS: DESCE 3.5dvh
     ======================= */
     function ajustarIOS(){
       const iOS = /iP(ad|hone|od)/.test(navigator.userAgent);
       if(!iOS) return;
 
-      const vh = window.innerHeight * 0.01;
+      const deslocamento = 3.5 * window.innerHeight * 0.01; // 3.5dvh
+      const img = document.getElementById("fundoConvite");
       const menu = document.querySelector(".menu-botoes");
       const countdown = document.querySelector(".countdown-area");
 
-      if(menu) menu.style.top = `calc(${vh * 48.4}px - env(safe-area-inset-bottom))`;
-      if(countdown) countdown.style.top = `calc(${vh * 60}px - env(safe-area-inset-bottom))`;
+      if(img) img.style.top = `${deslocamento}px`;
+      if(menu) menu.style.top = `calc(${parseFloat(getComputedStyle(menu).top)}px + ${deslocamento}px)`;
+      if(countdown) countdown.style.top = `calc(${parseFloat(getComputedStyle(countdown).top)}px + ${deslocamento}px)`;
     }
     window.addEventListener("load", ajustarIOS);
     window.addEventListener("resize", ajustarIOS);
